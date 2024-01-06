@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import jwt from 'jsonwebtoken'
 
+//The secret would be stored in .env in non-test environment
 const secret = 'secret'
 const PORT = 8080
 const app = express()
