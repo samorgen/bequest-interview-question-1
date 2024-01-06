@@ -4,7 +4,6 @@ const API_URL = 'http://localhost:8080'
 
 function App() {
   const [data, setData] = useState<string>()
-  const [backup, setBackup] = useState<string>()
 
   useEffect(() => {
     getData()
@@ -15,12 +14,13 @@ function App() {
     const { data, token } = await response.json()
 
     localStorage.setItem('bequest-token', token)
+    document.cookie = data.data
     setData(data.data)
   }
 
   const handleChange = (value: string) => {
     setData(value)
-    setBackup(value)
+    document.cookie = value
   }
 
   const updateData = async () => {
@@ -42,6 +42,7 @@ function App() {
   }
 
   const verifyData = async () => {
+    let cookieArr = document.cookie.split(';')
     let token = localStorage.getItem('bequest-token')
     let resp = await fetch(API_URL + '/verify', {
       method: 'POST',
@@ -57,7 +58,7 @@ function App() {
       alert(
         'Data has been tampered with. If you have recently made any changes, they have been recovered.'
       )
-      setData(backup)
+      setData(cookieArr[cookieArr.length - 1].trim())
     }
   }
 
