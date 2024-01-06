@@ -43,7 +43,7 @@ function App() {
     }
   }
 
-  //I'm not sure exactly the verify function is supposed to do, but this compares the token to the server
+  //I'm not sure exactly what the verify function is supposed to do, but this compares the token to the server
   //To check if it works, delete token from the body. That will trigger the error
   const verifyData = async () => {
     let cookieArr = document.cookie.split(';')
