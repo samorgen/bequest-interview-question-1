@@ -11,6 +11,7 @@ const database = { data: 'Hello World' }
 app.use(cors())
 app.use(express.json())
 
+//Verify token authenticity
 const auth = (req: any, res: any, next: any) => {
   const token = req.body.token
 
@@ -28,13 +29,14 @@ const auth = (req: any, res: any, next: any) => {
 }
 
 // Routes
-
+//In lieu of a login, I am creating the token here
 app.get('/', (req, res) => {
   let token = jwt.sign({ claims: database, expiresIn: '1hr' }, secret)
 
   res.json({ data: database, token: token })
 })
 
+//This post request only works with the correct token
 app.post('/', auth, (req, res) => {
   database.data = req.body.data
 

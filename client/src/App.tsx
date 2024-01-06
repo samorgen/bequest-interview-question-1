@@ -9,6 +9,7 @@ function App() {
     getData()
   }, [])
 
+  //Don't save cookie here in case data has been compromised
   const getData = async () => {
     const response = await fetch(API_URL)
     const { data, token } = await response.json()
@@ -17,11 +18,13 @@ function App() {
     setData(data.data)
   }
 
+  //When changed, save a cookie so the user can restore some data if server is compromised
   const handleChange = (value: string) => {
     setData(value)
     document.cookie = value
   }
 
+  //Verify user identity with token sent to server
   const updateData = async () => {
     let token = localStorage.getItem('bequest-token')
     let resp = await fetch(API_URL, {
@@ -40,6 +43,8 @@ function App() {
     }
   }
 
+  //I'm not sure exactly the verify function is supposed to do, but this compares the token to the server
+  //To check if it works, delete token from the body. That will trigger the error
   const verifyData = async () => {
     let cookieArr = document.cookie.split(';')
     let token = localStorage.getItem('bequest-token')
@@ -57,6 +62,7 @@ function App() {
       alert(
         'Data has been tampered with. If you have recently made any changes, they have been recovered.'
       )
+      //If a user has made any changes without updating, it should be saved in the cookie
       setData(cookieArr[cookieArr.length - 1].trim())
     }
   }
