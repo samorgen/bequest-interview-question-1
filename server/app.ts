@@ -37,8 +37,18 @@ app.get('/', (req, res) => {
 app.post('/', auth, (req, res) => {
   database.data = req.body.data
 
-  res.send({ data: database.data })
-  //res.sendStatus(200)
+  res.sendStatus(200)
+})
+
+app.post('/verify', (req, res) => {
+  let token = req.body.token
+  jwt.verify(token, secret, function (err: any) {
+    if (err) {
+      res.sendStatus(401)
+    } else {
+      res.sendStatus(200)
+    }
+  })
 })
 
 app.listen(PORT, () => {
