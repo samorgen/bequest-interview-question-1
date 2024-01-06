@@ -4,6 +4,7 @@ const API_URL = 'http://localhost:8080'
 
 function App() {
   const [data, setData] = useState<string>()
+  const [backup, setBackup] = useState<string>()
 
   useEffect(() => {
     getData()
@@ -17,9 +18,14 @@ function App() {
     setData(data.data)
   }
 
+  const handleChange = (value: string) => {
+    setData(value)
+    setBackup(value)
+  }
+
   const updateData = async () => {
     let token = localStorage.getItem('bequest-token')
-    await fetch(API_URL, {
+    let resp = await fetch(API_URL, {
       method: 'POST',
       body: JSON.stringify({ data, token }),
       headers: {
@@ -28,11 +34,31 @@ function App() {
       }
     })
 
-    await getData()
+    if (resp.status === 200) {
+      await getData()
+    } else {
+      alert('Unauthorized')
+    }
   }
 
   const verifyData = async () => {
-    throw new Error('Not implemented')
+    let token = localStorage.getItem('bequest-token')
+    let resp = await fetch(API_URL + '/verify', {
+      method: 'POST',
+      body: JSON.stringify({ token }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+    if (resp.status === 200) {
+      alert('Data verified')
+    } else {
+      alert(
+        'Data has been tampered with. If you have recently made any changes, they have been recovered.'
+      )
+      setData(backup)
+    }
   }
 
   return (
@@ -55,7 +81,7 @@ function App() {
         style={{ fontSize: '30px' }}
         type='text'
         value={data}
-        onChange={(e) => setData(e.target.value)}
+        onChange={(e) => handleChange(e.target.value)}
       />
 
       <div style={{ display: 'flex', gap: '10px' }}>
