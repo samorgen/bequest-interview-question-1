@@ -14,7 +14,6 @@ function App() {
     const { data, token } = await response.json()
 
     localStorage.setItem('bequest-token', token)
-    document.cookie = data.data
     setData(data.data)
   }
 
